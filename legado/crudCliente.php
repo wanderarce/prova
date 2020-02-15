@@ -2,11 +2,16 @@
 
 include "conecta.php";
 
-$acao = $_POST["acao"];
+$acao = "";
+if(isset($_POST["acao"]))
+    $acao = $_POST["acao"];
+if(isset($_GET["acao"]))
+    $acao = $_GET["acao"];
 
 $mensagem = "";
 
 switch ($acao) {
+    
     case "inserir":
 
         try {
@@ -24,7 +29,7 @@ switch ($acao) {
         }
 
         break;
-    case "editar":
+    case "editar" :
         $stmt = $pdo->prepare('UPDATE cliente SET nome = :nome, telefone = :telefone, idade = :idade where id = :id;');
         $stmt->execute([
                            ':id'       => $_POST["id"],
@@ -34,6 +39,13 @@ switch ($acao) {
                        ]);
         $mensagem = "Cliente atualizado com sucesso";
         break;
+    case "buscar" :
+        $query = "SELECT * FROM cliente ";
+        $acao = "buscar";
+        $consulta = $pdo->query($query);
+        $clientes = $consulta->fetchAll(PDO::FETCH_ASSOC);
+        break;
+
 }
 
-header("Location: /front/cliente/lista.php?mensagem=$mensagem");
+header("Location: ../front/cliente/lista.php?mensagem=$mensagem");

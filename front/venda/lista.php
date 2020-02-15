@@ -1,6 +1,18 @@
 <?php
-include "../cabecalho.php"; ?>
+include "../cabecalho.php";
+include "../../legado/conecta.php"; 
 
+
+
+$query = "SELECT * FROM venda ";
+$consulta = $pdo->prepare($query);
+$consulta->execute();
+$vendas = $consulta->fetchAll(PDO::FETCH_ASSOC);
+if(sizeof($vendas) <1) {
+    $mensagem = "Nenhum registro encontrado com esses parâmetros";
+    header("Location: lista.php?mensagem=$mensagem");
+}
+?>
     <div class="container">
         <div class="card">
             <div class="card-body">
@@ -16,6 +28,12 @@ include "../cabecalho.php"; ?>
                 </div>
                 <div class="row">
                     <div class="col s12">
+                        <?php
+                        if(sizeof($vendas) > 0) :
+                            foreach($vendas as $venda) :
+                            endforeach;
+                        endif; 
+                        ?>
                         <table class="table">
                             <thead>
                             <tr>

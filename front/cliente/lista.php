@@ -2,8 +2,41 @@
 include "../cabecalho.php";
 include "../../legado/conecta.php";
 
-$consulta = $pdo->query("SELECT * FROM cliente;");
+$query = "SELECT * FROM cliente ";
+
+$id = $_GET["id"];
+$nome = $_GET["nome"];
+
+if(!empty($id) || !empty($nome)) {
+    
+    $query = $query." WHERE ";
+    if(!empty($id) && !empty($nome)) {
+        $query = $query." id = ? AND nome LIKE CONCAT('%', ?, '%') " ;
+        $consulta = $pdo->prepare($query);
+        $consulta->execute([$id ,$nome]);
+    }
+    if(!empty($id) && empty($nome)) {
+        $query = $query." id = ? " ;
+        $consulta = $pdo->prepare($query);
+        $consulta->execute([$id]);
+    }    
+    if(!empty($nome) && empty($id)) {
+        $query = $query."  nome LIKE CONCAT('%', ?, '%') " ;
+        $consulta = $pdo->prepare($query);
+        $consulta->execute([$nome]);
+    }
+} else {
+    $consulta = $pdo->prepare($query);
+    $consulta->execute();
+}
+
+
 $clientes = $consulta->fetchAll(PDO::FETCH_ASSOC);
+if(sizeof($clientes) <1) {
+    $mensagem = "Nenhum registro encontrado com esses parâmetros";
+    header("Location: lista.php?mensagem=$mensagem");
+}
+
 
 $mensagem = $_GET["mensagem"] ?? "";
 
@@ -28,16 +61,20 @@ if ($mensagem != "") {
                 </div>
                 <div class="row mb-4">
                     <div class="col s12">
-                        <form>
+                        <form   method="get" action="lista.php?id=<?php echo $id; ?>&nome=<?php echo $nome; ?>" enctype="multipart/form-data">
+                        
                             <div class="form-row">
                                 <div class="col">
-                                    <input type="text" class="form-control" placeholder="ID">
+                                    <input type="number" min="1" step="1" class="form-control"
+                                     name="id" placeholder="ID" value="<?php echo $id ?>">
                                 </div>
                                 <div class="col-7">
-                                    <input type="text" class="form-control" placeholder="Nome do cliente">
+                                    <input type="text" class="form-control"  name="nome" 
+                                    value="<?php echo $nome ?>" placeholder="Nome do cliente">
                                 </div>
                                 <div class="col">
-                                    <a href="#" class="btn btn-success">Buscar</a>
+                                    <button type="submit" class="btn btn-primary">
+                                    Buscar</button>
                                 </div>
                             </div>
                         </form>
@@ -63,18 +100,20 @@ if ($mensagem != "") {
                             </thead>
                             <tbody>
                             <?php
-                            foreach ($clientes as $cliente) :
-                                ?>
-                                <tr>
-                                    <th scope="row"><?php echo $cliente["id"]; ?></th>
-                                    <td><?php echo $cliente["nome"]; ?></td>
-                                    <td><?php echo $cliente["idade"]; ?></td>
-                                    <td><?php echo $cliente["telefone"]; ?></td>
-                                    <td><a href="/front/cliente/formulario.php?id=<?php echo $cliente["id"]; ?>"><i
-                                                    class="fas fa-edit"></i></a></td>
-                                </tr>
-                            <?php
-                            endforeach;
+                            if(sizeof($clientes)>0) :
+                                foreach ($clientes as $cliente) :
+                                    ?>
+                                    <tr>
+                                        <th scope="row"><?php echo $cliente["id"]; ?></th>
+                                        <td><?php echo $cliente["nome"]; ?></td>
+                                        <td><?php echo $cliente["idade"]; ?></td>
+                                        <td><?php echo $cliente["telefone"]; ?></td>
+                                        <td><a href="formulario.php?id=<?php echo $cliente["id"]; ?>"><i
+                                                        class="fas fa-edit"></i></a></td>
+                                    </tr>
+                                <?php
+                                endforeach;
+                            endif;
                             ?>
                             </tbody>
                         </table>
