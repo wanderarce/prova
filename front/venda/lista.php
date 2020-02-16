@@ -2,16 +2,11 @@
 include "../cabecalho.php";
 include "../../legado/conecta.php"; 
 
-
-
-$query = "SELECT * FROM venda ";
+$query = "SELECT v.id AS id, v.recarga AS recarga, v.telefone, c.nome AS nome FROM venda v INNER JOIN cliente c ON c.id = v.cliente_id";
 $consulta = $pdo->prepare($query);
 $consulta->execute();
 $vendas = $consulta->fetchAll(PDO::FETCH_ASSOC);
-if(sizeof($vendas) <1) {
-    $mensagem = "Nenhum registro encontrado com esses parâmetros";
-    header("Location: lista.php?mensagem=$mensagem");
-}
+//setlocale(LC_MONETARY, 'pt_BR');
 ?>
     <div class="container">
         <div class="card">
@@ -28,12 +23,7 @@ if(sizeof($vendas) <1) {
                 </div>
                 <div class="row">
                     <div class="col s12">
-                        <?php
-                        if(sizeof($vendas) > 0) :
-                            foreach($vendas as $venda) :
-                            endforeach;
-                        endif; 
-                        ?>
+                        
                         <table class="table">
                             <thead>
                             <tr>
@@ -46,46 +36,27 @@ if(sizeof($vendas) <1) {
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>José da Silva</td>
-                                <td>R$ 5,00</td>
-                                <td> (11) 99595-9595 </td>
-                                <td><i class="fas fa-edit"></i></td>
-                                <td><i class="fas fa-trash"></i></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>José da Silva</td>
-                                <td>R$ 5,00</td>
-                                <td> (11) 99595-9595 </td>
-                                <td><i class="fas fa-edit"></i></td>
-                                <td><i class="fas fa-trash"></i></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>José da Silva</td>
-                                <td>R$ 5,00</td>
-                                <td> (11) 99595-9595 </td>
-                                <td><i class="fas fa-edit"></i></td>
-                                <td><i class="fas fa-trash"></i></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">4</th>
-                                <td>José da Silva</td>
-                                <td>R$ 5,00</td>
-                                <td> (11) 99595-9595 </td>
-                                <td><i class="fas fa-edit"></i></td>
-                                <td><i class="fas fa-trash"></i></td>
-                            </tr>
-                            <tr>
-                                <th scope="row">5</th>
-                                <td>José da Silva</td>
-                                <td>R$ 5,00</td>
-                                <td> (11) 99595-9595 </td>
-                                <td><i class="fas fa-edit"></i></td>
-                                <td><i class="fas fa-trash"></i></td>
-                            </tr>
+                            <?php
+                        if(sizeof($vendas) > 0) :
+                            foreach($vendas as $venda) :
+                                $valor  = str_replace(".", ",", $venda["recarga"]);
+                        ?>
+                                <tr>
+                                    <th scope="row"><?php echo $venda["id"]; ?></th>
+                                    <td><?php echo $venda["nome"]; ?></td>
+                                    <td><?php echo "R$ ".$valor; ?></td>
+                                    <td> <?php echo $venda["telefone"]; ?></td>
+                                    <td><a href="formulario.php?id=<?php echo $venda["id"]; ?>"><i
+                                                        class="fas fa-edit"></i></a></td>
+                                    <td>
+                                    <a href="../../legado/crudVenda.php?acao=excluir&id=<?php echo $venda['id']; ?>" >
+                                    <i class="fas fa-trash"></i>
+                                    </a></td>
+                                </tr>
+                        <?php 
+                            endforeach;
+                        endif; 
+                        ?>
                             </tbody>
                         </table>
                     </div>

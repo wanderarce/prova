@@ -4,8 +4,8 @@ include "../../legado/conecta.php";
 
 $query = "SELECT * FROM cliente ";
 
-$id = $_GET["id"];
-$nome = $_GET["nome"];
+$id = $_GET["id"] ?? "";
+$nome = $_GET["nome"] ?? "";
 
 if(!empty($id) || !empty($nome)) {
     

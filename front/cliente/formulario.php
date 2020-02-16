@@ -7,7 +7,7 @@ $id = $_GET["id"] ?? "";
 $acao = "inserir";
 
 if ($id != "") {
-    $consulta  = $pdo->query("SELECT * FROM cliente WHERE id = $id;");
+    $consulta  = $pdo->query("SELECT * FROM cliente WHERE id = $id");
     $qr        = $consulta->fetchAll(PDO::FETCH_ASSOC);
     $resultado = $qr[0];
     $acao      = "editar";
