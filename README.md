@@ -68,4 +68,13 @@ deve ser utilizado como base para desenvolvimento do módulo.
 * Os arquivos de font e css não estavam sendo carregado devido a estrutura do projeto dessa forma para que pudesse carregá-los foi alterado de ../assets/font-awesome/all.min.css para ./assets/font-awesome/all.min.css por exemplo;
 
 * O redirecionamento de todas as urls estavam apontando para o diretorios errado pelo menos na estrutura em que foi disponibilizado o projeto. Dessa forma foi apenas acrescentado as url's ../ para que olhem uma pasta acima.
+
 *
+Para autentição utilizei o passaport com as configurações abaixo:
+
+composer require laravel/passport
+php artisan migrate
+php artisan passport:install
+composer require laravel/ui
+php artisan ui vue --auth
+npm install && npm run dev
