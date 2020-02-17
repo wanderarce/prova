@@ -11,3 +11,6 @@
         crossorigin="anonymous"></script>
 
 <script src="../assets/font-awesome/all.min.js"></script>
+    <script type="text/javascript" src="../assets/jquery.mask.min.js"></script>
+    <script type="text/javascript" src="../assets/validator.js"></script>
+    

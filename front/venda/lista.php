@@ -2,11 +2,42 @@
 include "../cabecalho.php";
 include "../../legado/conecta.php"; 
 
-$query = "SELECT v.id AS id, v.recarga AS recarga, v.telefone, c.nome AS nome FROM venda v INNER JOIN cliente c ON c.id = v.cliente_id";
+$page = $_GET["page"] ?? 1;
+$limit = 5;
+$offset = $page == 1 ? 0 : $page;
+
+$queryCount = "SELECT COUNT(*) AS registers  FROM venda v INNER JOIN cliente c ON c.id = v.cliente_id";
+$count = $pdo->prepare($queryCount);
+$count->execute();
+
+$pages = $count->fetch(PDO::FETCH_ASSOC);
+$total = $pages["registers"];
+$registroPorPagina = 5;
+$numeroDePaginas = ceil($total/$registroPorPagina);
+$paginaInicial = ($registroPorPagina*$page)-$registroPorPagina;
+
+
+$query = "SELECT v.id AS id, v.recarga AS recarga, v.telefone, c.nome AS nome FROM venda v INNER JOIN cliente c ON c.id = v.cliente_id LIMIT :limit OFFSET :offset";
 $consulta = $pdo->prepare($query);
+$consulta->bindValue(":limit", $limit * $page, PDO::PARAM_INT);
+$consulta->bindValue(":offset", $offset, PDO::PARAM_INT);
 $consulta->execute();
+
 $vendas = $consulta->fetchAll(PDO::FETCH_ASSOC);
-//setlocale(LC_MONETARY, 'pt_BR');
+
+$mensagem = $_GET["mensagem"] ?? "";
+
+if ($mensagem != "") {
+    ?>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong><?php echo $mensagem ?></strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <?php
+}
+
 ?>
     <div class="container">
         <div class="card">
@@ -67,15 +98,22 @@ $vendas = $consulta->fetchAll(PDO::FETCH_ASSOC);
                     <div class="col s12">
                         <ul class="pagination justify-content-center">
                             <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Previous">
+                                <a class="page-link <?php echo  $page <= 1 ? 'd-none' : ''; ?>" href="javascript:window.location.href='/prova/front/venda/lista.php?page=<?php echo $page-1 ?>'" aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
+                            <?php 
+                                for ($i= 1; $i <= $numeroDePaginas ; $i++) { 
+                            ?>
+                                <li class="page-item <?php echo $page == $i ? 'active' : ''; ?>">
+                                <a class="page-link" href="javascript:window.location.href='/prova/front/venda/lista.php?page=<?php echo $i ?>'"><?php echo $i; ?></a>
+                                </li>
+                            <?php        
+                                }
+                                
+                            ?>
+                            <li class="page-item <?php echo  $page >= $numeroDePaginas ? 'd-none' : ''; ?>">
+                                <a class="page-link" href="javascript:window.location.href='/prova/front/venda/lista.php?page=<?php echo $page+1 ?>'" aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li>

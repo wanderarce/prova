@@ -52,7 +52,7 @@ if ($id != "") {
                     </div>
                     <div class="row">
                         <div class="col">
-                            <button type="submit" class="btn btn-primary">Salvar</button>
+                            <button type="submit" id="submit-cliente" class="btn btn-primary">Salvar</button>
                         </div>
                     </div>
             </div>

@@ -58,8 +58,8 @@ try {
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="numero" >Numero</label>
-                        <input type="text" class="form-control" id="numero" name="telefone" value="<?php echo $resultado['telefone'] ?? "" ?>" required>
+                        <label for="telefone" >Numero</label>
+                        <input type="text" class="form-control" id="telefone" name="telefone" value="<?php echo $resultado['telefone'] ?? "" ?>" required>
                     </div>
                     <div class="form-group">
                         <label for="recarga" >Recarga</label>
@@ -74,7 +74,7 @@ try {
                             
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="submit" id="submit-venda" class="btn btn-primary">Salvar</button>
                 </form>
             </div>
         </div>
