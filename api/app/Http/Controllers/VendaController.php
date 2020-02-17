@@ -26,7 +26,8 @@ class VendaController extends Controller
      */
     public function index()
     {
-        return Venda::paginate(5);
+        $vendas = Venda::paginate(5);
+        return response()->json($vendas, 200)->header('Content-Type', 'application/json');
     }
 
     /**

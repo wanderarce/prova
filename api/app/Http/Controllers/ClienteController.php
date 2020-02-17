@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Model\Cliente;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ClienteRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class ClienteController extends Controller
@@ -26,7 +25,8 @@ class ClienteController extends Controller
      */
     public function index()
     {
-        return Cliente::page(5);
+        $clientes = Cliente::paginate(5);
+        return response()->json($clientes, 200)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -64,12 +64,10 @@ class ClienteController extends Controller
      */
     public function show(Cliente $cliente)
     {
-
         try {
             $cliente = Cliente::find($cliente->id);
             return response()->json($cliente, 200, $this->headers);
         } catch (NotFoundHttpException $e) {
-
             return $e->getMessage();
         }
     }
@@ -81,10 +79,7 @@ class ClienteController extends Controller
      * @param  \App\Model\Cliente  $cliente
      * @return \Illuminate\Http\Response
      */
-    public function edit(Cliente $cliente)
-    {
-        //
-    }
+    public function edit(Cliente $cliente) {}
 
     /**
      * Update the specified resource in storage.
