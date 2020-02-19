@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Model\Venda;
 use Illuminate\Http\Request;
 use App\Http\Requests\VendaRequest;
+use App\Repositories\VendaRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class VendaController extends Controller
@@ -14,8 +15,11 @@ class VendaController extends Controller
         'Accept' => 'application/json'
     ];
 
+    public $vendaRepository;
+
     public function __construct()
     {
+        $this->vendaRepository = new VendaRepository;
         $this->middleware('auth:api')->except('index','show');
     }
 
@@ -26,7 +30,7 @@ class VendaController extends Controller
      */
     public function index()
     {
-        $vendas = Venda::paginate(5);
+        $vendas = $this->vendaRepository->paginate();
         return response()->json($vendas, 200)->header('Content-Type', 'application/json');
     }
 
@@ -64,7 +68,7 @@ class VendaController extends Controller
      */
     public function show(Venda $venda)
     {
-        return $venda;
+        return $this->vendaRepository->find($venda->id);
     }
 
     /**
@@ -87,7 +91,7 @@ class VendaController extends Controller
      */
     public function update(Request $request, Venda $venda)
     {
-        $venda->update($request->all());
+        $venda = $this->vendaRepository->update($request->all());
         return response()->json($venda, 200)->header('Content-Type', 'application/json');
     }
 
